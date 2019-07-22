@@ -4,11 +4,13 @@ end
 
 class Array
   def hash
+    
   end
 end
 
 class String
   def hash
+    
   end
 end
 
