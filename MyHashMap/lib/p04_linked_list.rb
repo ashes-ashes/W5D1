@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Node
   attr_reader :key
   attr_accessor :val, :next, :prev
@@ -17,10 +19,21 @@ class Node
     # optional but useful, connects previous link to next link
     # and removes self from list.
   end
+
+  def inspect
+    to_s
+  end
 end
 
 class LinkedList
+
+  include Enumerable
+
   def initialize
+    @head = Node.new
+    @tail = Node.new
+    @head.next = @tail
+    @tail.prev = @head
   end
 
   def [](i)
@@ -29,12 +42,16 @@ class LinkedList
   end
 
   def first
+    @head.next
   end
 
   def last
+    @tail.prev
   end
 
   def empty?
+    # debugger
+    @head.next == @tail
   end
 
   def get(key)
@@ -44,6 +61,12 @@ class LinkedList
   end
 
   def append(key, val)
+    node1 = Node.new(key, val)
+    node1.prev = last
+    last.next = node1
+    node1.next = @tail
+    @tail.prev = node1
+
   end
 
   def update(key, val)
@@ -52,7 +75,12 @@ class LinkedList
   def remove(key)
   end
 
-  def each
+  def each(&prc)
+    nodes = [first]
+    until nodes[-1].next == @tail
+      nodes << nodes[-1].next
+    end
+    nodes.each { |node| prc.call(node) }
   end
 
   # uncomment when you have `each` working and `Enumerable` included
